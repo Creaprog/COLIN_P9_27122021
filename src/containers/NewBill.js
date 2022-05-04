@@ -1,6 +1,7 @@
 import { ROUTES_PATH } from "../constants/routes.js";
 import Logout from "./Logout.js";
 
+// TODO: Bug à résoudre.
 export default class NewBill {
   constructor({ document, onNavigate, store, localStorage }) {
     this.document = document;
@@ -21,37 +22,49 @@ export default class NewBill {
     e.preventDefault();
     const file = this.document.querySelector(`input[data-testid="file"]`)
       .files[0];
+
     const filePath = e.target.value.split(/\\/g);
     const fileName = filePath[filePath.length - 1];
     console.log(fileName);
+    if (
+      !fileName
+        .split(".")
+        .pop()
+        .match(/(png|jpg|jpeg)/g)
+    ) {
+      document.querySelector(`#error-file`).textContent = "Mauvaise extension";
+      // throw new Error("Mauvaise extension");
+    }// OK
     const formData = new FormData();
     const email = JSON.parse(localStorage.getItem("user")).email;
     formData.append("file", file);
     formData.append("email", email);
+    if (this.store) {
+      this.store
+        .bills()
+        .create({
+          data: formData,
+          headers: {
+            noContentType: true,
+          },
+        })
+        .then(({ fileUrl, key }) => {
+          console.log(fileUrl);
+          this.billId = key;
+          this.fileUrl = fileUrl;
+          this.fileName = fileName;
+          if (
+            !this.fileName
+              .split(".")
+              .pop()
+              .match(/(png|jpg|jpeg)/g)
+          ) {
+            throw new Error("Bad extension");
+          }
+        })
+        .catch((error) => console.error(error));
+    }
 
-    this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true,
-        },
-      })
-      .then(({ fileUrl, key }) => {
-        console.log(fileUrl);
-        this.billId = key;
-        this.fileUrl = fileUrl;
-        this.fileName = fileName;
-        if (
-          !this.fileName
-            .split(".")
-            .pop()
-            .match(/(png|jpg|jpeg)/g)
-        ) {
-          throw new Error("Bad extension");
-        }
-      })
-      .catch((error) => console.error(error));
   };
   handleSubmit = (e) => {
     e.preventDefault();
