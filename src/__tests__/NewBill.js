@@ -36,30 +36,27 @@ describe("Given I am connected as an employee", () => {
     })
   })
   describe("When I select an image in a correct format", () => {
-    // test("Then the input file should display the file name", () => {
-    //   //page NewBill
-    //   const html = NewBillUI();
-    //   document.body.innerHTML = html;
-    //   const onNavigate = (pathname) => {
-    //     document.body.innerHTML = ROUTES({ pathname });
-    //   };
-    //   // initialisation NewBill
-    //   const newBill = new NewBill({ document, onNavigate, store, localStorage: window.localStorage })
-    //   const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e))
-    //   const input = screen.getByTestId('file');
-    //   input.addEventListener('change', handleChangeFile);
-    //   //fichier au bon format
-    //   fireEvent.change(input, {
-    //     target: {
-    //       files: [new File(['image.png'], 'image.png', {
-    //         type: 'image/png'
-    //       })],
-    //       value: 'image.png'
-    //     }
-    //   })
-    //   expect(handleChangeFile).toHaveBeenCalled()
-    //   expect(input.files[0].name).toBe('image.png');
-    // })
+    test("Then the input file should display the file name", () => {
+      //page NewBill
+      document.body.innerHTML = "";
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+
+      // initialisation NewBill
+      const newBill = new NewBill({ document, onNavigate, store, localStorage: window.localStorage })
+      const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e))
+      const input = screen.getByTestId('file');
+      input.addEventListener('change', handleChangeFile);
+      //fichier au bon format
+
+      fireEvent.change(input, { target: { files: [{ name: 'image.png', type: 'image/png' }] } });
+
+      expect(handleChangeFile).toHaveBeenCalled()
+      expect(input.files[0].name).toBe('image.png');
+    })
     test("Then a bill is created", () => {
       //page NewBill
       const html = NewBillUI();
@@ -78,30 +75,25 @@ describe("Given I am connected as an employee", () => {
     })
   })
   describe("When I select a file with an incorrect extension", () => {
-    // test("Then the bill is deleted", () => {
-    //   //page NewBill
-    //   const html = NewBillUI();
-    //   document.body.innerHTML = html;
-    //   const onNavigate = (pathname) => {
-    //     document.body.innerHTML = ROUTES({ pathname });
-    //   };
-    //   // initialisation NewBill
-    //   const newBill = new NewBill({ document, onNavigate, store: null, localStorage: window.localStorage })
-    //   // fonctionnalité séléction fichier
-    //   const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e))
-    //   const input = screen.getByTestId('file');
-    //   input.addEventListener('change', handleChangeFile);
-    //   //fichier au mauvais format
-    //   fireEvent.change(input, {
-    //     target: {
-    //       files: [new File(['image.txt'], 'image.txt', {
-    //         type: 'image/txt'
-    //       })],
-    //     }
-    //   })
-    //   expect(handleChangeFile).toHaveBeenCalled()
-    //   expect(input.files[0].name).toBe('image.txt');
-    // })
+    test("Then the bill is deleted", () => {
+      //page NewBill
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      // initialisation NewBill
+      const newBill = new NewBill({ document, onNavigate, store: null, localStorage: window.localStorage })
+      // fonctionnalité séléction fichier
+      const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e))
+      const input = screen.getByTestId('file');
+      input.addEventListener('change', handleChangeFile);
+      //fichier au mauvais format
+      fireEvent.change(input, { target: { files: [{ name: 'image.txt', type: 'image/txt' }] } });
+
+      expect(handleChangeFile).toHaveBeenCalled()
+      expect(input.files[0].name).toBe('image.txt');
+    })
 
     Object.defineProperty(window, "localStorage", { value: localStorageMock });
     window.localStorage.setItem(
